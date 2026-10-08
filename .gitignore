@@ -1,0 +1,8 @@
+/vendor/
+/node_modules/
+/templates_c/
+/cache/
+.env
+.env.local
+.DS_Store
+*.log
