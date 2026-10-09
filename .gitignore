@@ -1,8 +1,10 @@
 /vendor/
 /node_modules/
-/templates_c/
+/templates_c/*
+!/templates_c/.gitkeep
 /cache/
 .env
 .env.local
+.env.prod
 .DS_Store
 *.log

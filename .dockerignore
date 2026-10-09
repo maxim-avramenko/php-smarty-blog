@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.local
+.env.prod
+docker-compose.yml
+docker-compose.local.yml
+docker-compose.prod.yml
+README.md
+TASK.md
+templates_c/*
+cache
+vendor
+node_modules
+*.log
+.DS_Store
