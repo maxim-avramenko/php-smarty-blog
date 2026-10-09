@@ -1,0 +1,30 @@
+services:
+  nginx:
+    volumes:
+      - app_code:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - app
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.php-smarty-blog.rule=Host(`${APP_DOMAIN}`)
+      - traefik.http.routers.php-smarty-blog.entrypoints=${TRAEFIK_ENTRYPOINT}
+      - traefik.http.routers.php-smarty-blog.tls=true
+      - traefik.http.routers.php-smarty-blog.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+      - traefik.http.services.php-smarty-blog.loadbalancer.server.port=80
+
+  php:
+    build:
+      target: prod
+    volumes:
+      - app_code:/var/www/html
+
+networks:
+  traefik:
+    name: ${TRAEFIK_NETWORK:-traefik}
+    external: true
+
+volumes:
+  app_code:
