@@ -18,6 +18,11 @@ services:
       target: dev
     volumes:
       - ./:/var/www/html
+      - templates_c:/var/www/html/templates_c
+    entrypoint:
+      - /bin/sh
+      - -c
+      - mkdir -p /var/www/html/templates_c && chown www-data:www-data /var/www/html/templates_c && exec docker-php-entrypoint php-fpm
 
   mysql:
     ports:
@@ -27,3 +32,6 @@ networks:
   traefik:
     name: ${TRAEFIK_NETWORK:-traefik}
     external: true
+
+volumes:
+  templates_c:
