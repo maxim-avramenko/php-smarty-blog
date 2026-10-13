@@ -19,6 +19,12 @@ make up
 
 Сайт: [http://php-smarty-blog.localhost](http://php-smarty-blog.localhost)
 
+На пустом томе MySQL схема и сид применяются сами. Если том уже был создан раньше:
+
+```bash
+make db-seed
+```
+
 Код монтируется в контейнеры, пересборка PHP-образа для правок не нужна.
 
 ```bash
