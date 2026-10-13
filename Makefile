@@ -1,7 +1,7 @@
 COMPOSE_LOCAL = docker compose -f docker-compose.yml -f docker-compose.local.yml --env-file .env.local
 COMPOSE_PROD = docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod
 
-.PHONY: up down logs up-prod down-prod db-schema db-seed css
+.PHONY: up down logs up-prod down-prod db-schema db-seed css test
 
 up:
 	$(COMPOSE_LOCAL) up -d --build
@@ -27,3 +27,9 @@ db-seed:
 css:
 	mkdir -p public/css
 	docker run --rm -v "$(CURDIR):/src" -w /src node:22-alpine npx --yes sass assets/scss/app.scss public/css/app.css --no-source-map
+
+test:
+	$(COMPOSE_LOCAL) exec -T mysql sh -c 'mysql -uroot -p"$$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS blog_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON blog_test.* TO '"'"'$$MYSQL_USER'"'"'@'"'"'%'"'"';"'
+	$(COMPOSE_LOCAL) exec -T mysql sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" blog_test' < sql/schema.sql
+	$(COMPOSE_LOCAL) exec -T -e MYSQL_DATABASE=blog_test php composer install --no-interaction --no-progress
+	$(COMPOSE_LOCAL) exec -T -e MYSQL_DATABASE=blog_test php vendor/bin/phpunit

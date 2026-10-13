@@ -10,11 +10,11 @@ final class View
 {
     private Smarty $smarty;
 
-    public function __construct(string $root)
+    public function __construct(string $root, ?string $compileDir = null)
     {
         $this->smarty = new Smarty();
         $this->smarty->setTemplateDir($root . '/templates');
-        $this->smarty->setCompileDir($root . '/templates_c');
+        $this->smarty->setCompileDir($compileDir ?? $root . '/templates_c');
         $this->smarty->setEscapeHtml(true);
     }
 
