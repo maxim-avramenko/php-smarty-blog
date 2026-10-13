@@ -23,5 +23,6 @@ FROM base AS dev
 FROM base AS prod
 
 COPY . /var/www/html
-RUN mkdir -p /var/www/html/templates_c /var/www/html/public/uploads \
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
+    && mkdir -p /var/www/html/templates_c /var/www/html/public/uploads \
     && chown -R www-data:www-data /var/www/html/templates_c /var/www/html/public/uploads
