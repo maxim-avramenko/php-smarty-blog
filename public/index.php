@@ -50,11 +50,29 @@ try {
             $page = 1;
         }
 
+        $categoryId = (int) $matches[1];
+        $category = $repository->findCategory($categoryId);
+        if ($category === null) {
+            http_response_code(404);
+            $view->render('not-found.tpl', [
+                'title' => 'Страница не найдена',
+            ]);
+            return;
+        }
+
+        $listing = $repository->findCategoryArticles($categoryId, $sort, $page);
+        $totalPages = $listing['total'] > 0
+            ? (int) ceil($listing['total'] / BlogRepository::PAGE_SIZE)
+            : 0;
+
         $view->render('category.tpl', [
-            'title' => 'Категория',
-            'id' => (int) $matches[1],
+            'title' => $category['name'],
+            'category' => $category,
+            'articles' => $listing['articles'],
             'sort' => $sort,
             'page' => $page,
+            'total' => $listing['total'],
+            'totalPages' => $totalPages,
         ]);
         return;
     }
