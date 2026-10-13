@@ -187,4 +187,12 @@ final class BlogRepository
 
         return $statement->fetchAll();
     }
+
+    public function incrementArticleViews(int $id): void
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE articles SET views = views + 1 WHERE id = :id'
+        );
+        $statement->execute(['id' => $id]);
+    }
 }

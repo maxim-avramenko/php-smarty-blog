@@ -78,10 +78,24 @@ try {
     }
 
     if (preg_match('#^/article/(\d+)$#', $path, $matches) === 1) {
+        $articleId = (int) $matches[1];
+        $article = $repository->findArticleWithCategories($articleId);
+        if ($article === null) {
+            http_response_code(404);
+            $view->render('not-found.tpl', [
+                'title' => 'Страница не найдена',
+            ]);
+            return;
+        }
+
+        $similar = $repository->findSimilarArticles($articleId);
+
         $view->render('article.tpl', [
-            'title' => 'Статья',
-            'id' => (int) $matches[1],
+            'title' => $article['title'],
+            'article' => $article,
+            'similar' => $similar,
         ]);
+        $repository->incrementArticleViews($articleId);
         return;
     }
 
