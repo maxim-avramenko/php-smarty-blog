@@ -1,7 +1,7 @@
 COMPOSE_LOCAL = docker compose -f docker-compose.yml -f docker-compose.local.yml --env-file .env.local
 COMPOSE_PROD = docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod
 
-.PHONY: up down logs up-prod down-prod db-schema
+.PHONY: up down logs up-prod down-prod db-schema db-seed
 
 up:
 	$(COMPOSE_LOCAL) up -d --build
@@ -20,3 +20,6 @@ down-prod:
 
 db-schema:
 	$(COMPOSE_LOCAL) exec -T mysql sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"' < sql/schema.sql
+
+db-seed:
+	$(COMPOSE_LOCAL) exec -T mysql sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"' < sql/seed.sql
