@@ -73,6 +73,22 @@ final class BlogRepository
     }
 
     /**
+     * @return array{id: int|string, name: string, description: string}|null
+     */
+    public function findCategory(int $id): ?array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT id, name, description
+             FROM categories
+             WHERE id = :id'
+        );
+        $statement->execute(['id' => $id]);
+        $category = $statement->fetch();
+
+        return $category === false ? null : $category;
+    }
+
+    /**
      * @return array{articles: list<array<string, mixed>>, total: int}
      */
     public function findCategoryArticles(int $categoryId, string $sort, int $page): array
