@@ -6,7 +6,7 @@ namespace App;
 
 use PDO;
 
-final class BlogRepository
+class BlogRepository
 {
     public const PAGE_SIZE = 6;
 
