@@ -27,6 +27,12 @@ make db-seed
 
 Код монтируется в контейнеры, пересборка PHP-образа для правок не нужна.
 
+Стили пишутся в `assets/scss`. Скомпилированный CSS лежит в `public/css/app.css`. После правок SCSS (`make css` собирает через одноразовый контейнер Node, в PHP-образ Node не входит):
+
+```bash
+make css
+```
+
 ```bash
 make logs
 make down
