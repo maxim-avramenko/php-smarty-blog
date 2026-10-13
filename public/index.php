@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+use App\BlogRepository;
 use App\Database;
 use App\View;
 
 $view = new View(dirname(__DIR__));
 
 try {
-    Database::connect();
+    $repository = new BlogRepository(Database::connect());
 
     $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
     if (!is_string($path) || $path === '') {
@@ -18,8 +19,22 @@ try {
     }
 
     if ($path === '/') {
+        $categories = $repository->findCategoriesWithArticles();
+        $categoryIds = array_map(static fn(array $category): int => (int) $category['id'], $categories);
+        $latestByCategory = $repository->findLatestArticlesByCategoryIds($categoryIds);
+
+        $sections = [];
+        foreach ($categories as $category) {
+            $categoryId = (int) $category['id'];
+            $sections[] = [
+                'category' => $category,
+                'articles' => $latestByCategory[$categoryId] ?? [],
+            ];
+        }
+
         $view->render('home.tpl', [
             'title' => 'Главная',
+            'sections' => $sections,
         ]);
         return;
     }
